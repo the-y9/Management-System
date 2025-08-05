@@ -1,3 +1,5 @@
 __pycache__/
 cms.db
 products.csv
+node_modules/
+.venv/
