@@ -16,3 +16,23 @@ h1 {
 label {
   font-weight: 500;
 }
+
+table td.highlight-col,
+table th.highlight-col {
+  background-color: #fff3cd;
+  font-weight: bold;
+}
+
+.navbar-scroll .navbar-brand {
+  color: #fff;
+}
+
+/* Color of the links AFTER scroll */
+.navbar-scrolled .navbar-brand {
+  color: #4f4f4f;
+}
+
+/* Color of the navbar AFTER scroll */
+.navbar-scrolled {
+  background-color: #f3eeee;
+}

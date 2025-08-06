@@ -2,8 +2,9 @@
 
 import sqlite3
 from typing import List, Dict, Optional
+from config_db import DB_NAME
 
-DB_NAME = "cms.db"
+# DB_NAME = "cms.db"
 
 class CustomerDAO:
     def __init__(self, db_name=DB_NAME):

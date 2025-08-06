@@ -1,6 +1,9 @@
 import sqlite3
+from typing import Dict
+from config_db import DB_NAME
 
-DB_NAME = "cms.db"
+
+# DB_NAME = "cms.db"
 
 class SaleDAO:
     def __init__(self, db_name=DB_NAME):
@@ -81,6 +84,20 @@ class SaleDAO:
             "sale": dict(sale),
             "items": [dict(item) for item in items]
         }
+    
+    def update(self, sale_id: str, updates: Dict) -> bool:
+        if not updates:
+            return False
+        try:
+            conn = self._connect()
+            cursor = conn.cursor()
+            fields = ', '.join(f"{k} = ?" for k in updates)
+            values = list(updates.values()) + [sale_id]
+            cursor.execute(f"UPDATE Sale SET {fields} WHERE sale_id = ?", values)
+            conn.commit()
+            return cursor.rowcount > 0
+        finally:
+            conn.close()
 
     def delete(self, sale_id: str) -> bool:
         try:

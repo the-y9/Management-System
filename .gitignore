@@ -3,3 +3,7 @@ cms.db
 products.csv
 node_modules/
 .venv/
+*.db
+*/__pycache__/
+*.pyc
+*.pyo

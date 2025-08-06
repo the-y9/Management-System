@@ -4,6 +4,10 @@ from dao.sale_dao import SaleDAO
 router = APIRouter()
 sale_dao = SaleDAO()
 
+@router.get("/sales")
+async def list_sales():
+    return sale_dao.list_all()
+
 @router.post("/sale", status_code=status.HTTP_201_CREATED)
 async def create_sale(request: Request):
     data = await request.json()
@@ -23,6 +27,13 @@ async def get_sale(sale_id: str):
     if result:
         return result
     raise HTTPException(status_code=404, detail="Sale not found")
+
+@router.put("/sale/{sale_id}")
+async def update_sale(sale_id: str, request: Request):
+    data = await request.json()
+    if sale_dao.update(sale_id, data):
+        return {"message": "Customer updated"}
+    raise HTTPException(status_code=400, detail="Update failed or sale not found")
 
 @router.delete("/sale/{sale_id}")
 async def delete_sale(sale_id: str):

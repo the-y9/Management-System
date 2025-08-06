@@ -23,15 +23,15 @@ async def create_product(request: Request):
         return {"message": "Product created successfully"}
     raise HTTPException(status_code=400, detail="Failed to create product")
 
-@router.put("/product/{stock_no}")
-async def update_product(stock_no: str, request: Request):
+@router.put("/product/{sno}")
+async def update_product(sno: str, request: Request):
     data = await request.json()
-    if product_dao.update(stock_no, data):
+    if product_dao.update(sno, data):
         return {"message": "Product updated"}
     raise HTTPException(status_code=400, detail="Update failed or product not found")
 
-@router.delete("/product/{stock_no}")
-async def delete_product(stock_no: str):
-    if product_dao.delete(stock_no):
+@router.delete("/product/{sno}")
+async def delete_product(sno: str):
+    if product_dao.delete(sno):
         return {"message": "Product deleted"}
     raise HTTPException(status_code=400, detail="Delete failed or product not found")

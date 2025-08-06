@@ -11,35 +11,30 @@ import GenericTable from "./GenericTable";
 import EditModal from "./EditModal";
 import AddModal from "./AddModal";
 
-function Products() {
-  const [products, setProducts] = useState([]);
+function Sales() {
+  const [sales, setSales] = useState([]);
   const [search, setSearch] = useState("");
 
   const colHeaders = [
-  { key: "stock_no", label: "Stock No.", type: "text" },
-  { key: "name", label: "Product Name", type: "text" },
-  { key: "category", label: "Category", type: "text" },
-  { key: "qty_per_unit", label: "Qty.", type: "text" },
-  { key: "volume_points", label: "Volume Points", type: "number" },
-  { key: "mrp", label: "MRP", type: "number" },
-  { key: "retail_price", label: "Retail Price", type: "number" },
-  { key: "earn_base", label: "*Earn Base", type: "number" },
-  { key: "per_25", label: "25%", type: "number" },
-  { key: "per_35", label: "35%", type: "number" },
-  { key: "per_42", label: "42%", type: "number" },
-  { key: "per_50", label: "50%", type: "number" },
+  { key: "sale_id", label: "Sale ID", type: "text" },
+  { key: "customer_id", label: "Customer ID", type: "text" },
+  { key: "date", label: "Date", type: "date" },
+  { key: "mode", label: "Mode", type: "text" },
+  { key: "total_amount", label: "Total Amount", type: "number" },
+  { key: "total_volume_points", label: "Total Volume Points", type: "number" },
 ];
 
-  // const cur_level = 'per_35';
+
+
 
   const searchableFields = colHeaders.map((col) => col.key);
   const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:8000/products");
+        const response = await fetch("http://localhost:8000/sales");
         const data = await response.json();
-        setProducts(data);
+        setSales(data);
       } catch (error) {
-        console.error("Failed to fetch products:", error);
+        console.error("Failed to fetch sales:", error);
       }
     };
 
@@ -47,7 +42,7 @@ function Products() {
     fetchData();
   }, []);
 
-  const filteredData = products.filter((item) => {
+  const filteredData = sales.filter((item) => {
     return (
       search === "" ||
       searchableFields.some((field) =>
@@ -66,7 +61,7 @@ function Products() {
 
   const handleSave = async (updatedItem) => {
       try {
-        const response = await fetch(`http://localhost:8000/product/${updatedItem.sno}`, {
+        const response = await fetch(`http://localhost:8000/sale/${updatedItem.sale_id}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -79,18 +74,18 @@ function Products() {
           throw new Error(data.detail || "Update failed");
         }
 
-        alert("Product updated successfully");
+        alert("Sale updated successfully");
         await fetchData();
       } catch (error) {
-        console.error("Error updating product:", error.message);
-        alert("Failed to update product: " + error.message);
+        console.error("Error updating sale:", error.message);
+        alert("Failed to update sale: " + error.message);
       }
     };
 
     const [showAddModal, setShowAddModal] = useState(false);
     const handleAddSave = async (newItem) => {
         try {
-            const response = await fetch("http://localhost:8000/product", {
+            const response = await fetch("http://localhost:8000/sale", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -100,25 +95,26 @@ function Products() {
 
             if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(errorData.detail || "Failed to create product");
+            throw new Error(errorData.detail || "Failed to create sale");
             }
 
-            alert("Product created successfully!");
+            alert("Sale created successfully!");
             
             // Optionally refresh data
             await fetchData(); // Assuming you have a fetchData function
 
         } catch (error) {
-            console.error("Error adding product:", error.message);
-            alert("Failed to add product: " + error.message);
+            console.error("Error adding sale:", error.message);
+            alert("Failed to add sale: " + error.message);
         }
         };
+
 
 
   const renderCustomActions = (item) => {
     const handleDelete = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/product/${item.sno}`, {
+        const response = await fetch(`http://localhost:8000/sale/${item.sale_id}`, {
           method: "DELETE",
         });
 
@@ -127,12 +123,12 @@ function Products() {
           throw new Error(data.detail || "Delete failed");
         }
 
-        alert("Product deleted successfully");
+        alert("Sale deleted successfully");
         await fetchData();
         
       } catch (error) {
-        console.error("Error deleting product:", error.message);
-        alert("Failed to delete product: " + error.message);
+        console.error("Error deleting sale:", error.message);
+        alert("Failed to delete sale: " + error.message);
       }
     };
 
@@ -154,7 +150,7 @@ function Products() {
 
   return (
     <div className="display-container">
-      <h1 className="text-center my-4">Product Master</h1>
+      <h1 className="text-center my-4">Sale Master</h1>
 
       <Container>
         <Row className="align-items-start">
@@ -165,7 +161,7 @@ function Products() {
               </InputGroup.Text>
               <FormControl
                 type="search"
-                placeholder="Search products"
+                placeholder="Search sales"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -180,13 +176,14 @@ function Products() {
             {/* <AdminManageModal /> */}
           </Col>
         </Row>
-        <Button onClick={() => setShowAddModal(true)}>Add Product</Button>
+            <Button onClick={() => setShowAddModal(true)}>Add Sale</Button>
             <AddModal
                 show={showAddModal}
                 onClose={() => setShowAddModal(false)}
                 fields={colHeaders}
                 onSave={handleAddSave}
             />
+
       </Container>
 
       <Container fluid className="mt-4">
@@ -198,6 +195,7 @@ function Products() {
           data={filteredData}
           renderActions={renderCustomActions}
           variant="light"
+          rowKey="sale_id"
         />
         
         <EditModal
@@ -206,11 +204,10 @@ function Products() {
           item={currentItem}
           fields={editableFields}
           onSave={handleSave}
-          rowKey="sno"
         />
       </Container>
     </div>
   );
 }
 
-export default Products;
+export default Sales;

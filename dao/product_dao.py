@@ -2,8 +2,9 @@
 
 import sqlite3
 from typing import List, Dict, Optional
+from config_db import DB_NAME
 
-DB_NAME = "cms.db"
+# DB_NAME = "cms.db"
 
 class ProductDAO:
     def __init__(self, db_name=DB_NAME):
@@ -48,24 +49,24 @@ class ProductDAO:
         conn.close()
         return dict(row) if row else None
 
-    def update(self, stock_no: str, updates: Dict) -> bool:
+    def update(self, sno: str, updates: Dict) -> bool:
         if not updates:
             return False
         try:
             conn = self._connect()
             cursor = conn.cursor()
             fields = ', '.join(f"{k} = ?" for k in updates)
-            values = list(updates.values()) + [stock_no]
-            cursor.execute(f"UPDATE Product SET {fields} WHERE stock_no = ?", values)
+            values = list(updates.values()) + [sno]
+            cursor.execute(f"UPDATE Product SET {fields} WHERE sno = ?", values)
             conn.commit()
             return cursor.rowcount > 0
         finally:
             conn.close()
 
-    def delete(self, stock_no: str) -> bool:
+    def delete(self, sno: str) -> bool:
         conn = self._connect()
         cursor = conn.cursor()
-        cursor.execute("DELETE FROM Product WHERE stock_no = ?", (stock_no,))
+        cursor.execute("DELETE FROM Product WHERE sno = ?", (sno,))
         conn.commit()
         deleted = cursor.rowcount > 0
         conn.close()
